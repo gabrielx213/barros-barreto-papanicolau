@@ -1,7 +1,7 @@
 import {
   TextField
 } from "@mui/material";
-import MaskInput from "../../components/MaskInput";
+import MaskInput from "../../../src/components/MaskInput";
 
 export const components = (formik) => {
 

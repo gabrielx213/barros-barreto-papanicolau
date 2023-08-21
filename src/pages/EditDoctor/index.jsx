@@ -3,7 +3,6 @@ import { useFormik } from "formik";
 import { useState } from "react";
 import { useEffect } from "react";
 import api from "../../services/api";
-import moment from "moment";
 import { validationSchema } from "./validationSchema";
 import { components } from "./components";
 import Notification from "../../components/Notification/Notification";
@@ -11,7 +10,7 @@ import { useHistory, useParams } from "react-router-dom";
 
 const classes = {
     btnSubmit: {
-        backgroundColor: "#1B98E0",
+        backgroundColor: "#075d85",
         color: "white",
         border: "1px solid rgba(0, 0, 0, 0.23)",
     },
@@ -45,32 +44,22 @@ export default function EditDoctor() {
     const { doctorId } = useParams();
 
     const [valuesFormik, setValuesFormik] = useState(INITIAL_VALUES_FORMIK);
-    const [doctors, setDoctors] = useState([]);
+    const [doctor, setDoctor] = useState([]);
     useEffect(() => {
-        api.get("doctors").then((response) => {
-            setDoctors(response.data);
+        api.get(`/doctors/${doctorId}`).then((response) => {
+            setDoctor(response.data);
+
+            const { data } = response;
+
+            setValuesFormik({
+                name: data.name,
+                email: data.email,
+                CRM: data.CRM,
+                phone: data.phone,
+                password: data.password
+            });
         });
     }, []);
-
-    useEffect(() => {
-        const filter = {
-            include: ["doctor", "raspberry"],
-        };
-
-        api
-            .get(`doctors/${doctorId}?filter=${JSON.stringify(filter)}`)
-            .then((response) => {
-                const { data } = response;
-
-                setValuesFormik({
-                    name: data.name,
-                    email: data.email,
-                    CRM: data.CRM,
-                    phone: data.phone,
-                    password: data.password
-                });
-            });
-    });
 
     const removeOptionalValues = (optionalValues, data) => {
         const newValue = { ...data };
@@ -85,24 +74,25 @@ export default function EditDoctor() {
         //Remove de "values" atributos que não possuem o mesmo nome na
         //api, ou que precisam ser tratados antes de serem enviados
         const {
-            height,
-            weight,
-            doctorResponsible,
-            rg,
-            hospitalRecord,
-            raspberry,
-            normalVolumeInMl,
+            name,
+            email,
+            CRM,
+            phone,
             ...data
         } = values;
 
-        const newData = removeOptionalValues(
-            [
-            ],
-            data
-        );
+        data.name = name;
+
+        data.email = email;
+
+        data.CRM = CRM;
+
+        data.phone = phone;
+
+        console.log(data);
 
         api
-            .patch(`doctors/${doctorId}`, newData)
+            .patch(`/doctors/${doctorId}`, data)
             .then((response) => {
                 setNotify({
                     isOpen: true,
@@ -136,11 +126,6 @@ export default function EditDoctor() {
     const {
         textFieldFormik,
         inputMaskFormik,
-        datePickerFormik,
-        dateTimePickerFormik,
-        autocompleteFormik,
-        selectFormik,
-        checkBoxForDefaulVolume,
     } = components(formik);
 
 
@@ -157,50 +142,41 @@ export default function EditDoctor() {
 
                 <form onSubmit={formik.handleSubmit}>
                     <Grid container spacing={2}>
+                        <Grid item xs={12} sm={6} md={3} lg={3}>
+                            {textFieldFormik({
+                                id: "name",
+                                label: "Nome",
+                                required: true,
+                            })}
+                        </Grid>
 
                         <Grid item xs={12} sm={6} md={3} lg={3}>
-                            {textFieldFormik({ id: "name", label: "Nome" })}
-                     </Grid>
-
-                        <Grid item xs={12} sm={6} md={3} lg={3}>
-                            {textFieldFormik({ id: "email", label: "E-mail" })}
-                     </Grid>
+                            {textFieldFormik({
+                                id: "email",
+                                label: "E-mail",
+                                required: true,
+                            })}
+                        </Grid>
 
                         <Grid item xs={12} sm={6} md={3} lg={3}>
                             {inputMaskFormik({
-                               id: "CRM",
-                               label: "CRM",
-                               mask: "999999-aa",
-                               useRawValue: true,
-                             })}
-                     </Grid>
+                                id: "CRM",
+                                label: "CRM",
+                                mask: "999999-aa",
+                                useRawValue: true,
+                            })}
+                        </Grid>
 
                         <Grid item xs={12} sm={6} md={3} lg={3}>
-                           {inputMaskFormik({
-                             id: "phone",
-                             label: "Telefone",
-                             mask: "(99) 99999-9999",
-                          useRawValue: true,
-                        })}
-                      </Grid>
+                            {inputMaskFormik({
+                                id: "phone",
+                                label: "Telefone",
+                                mask: "(99) 99999-9999",
+                                useRawValue: true,
+                            })}
+                        </Grid>
 
-                         <Grid item xs={12} sm={6} md={6} lg={6}>
-                           {textFieldFormik({
-                             id: "password",
-                             label: "Senha",
-                             type: "password",
-                           })}
-                      </Grid>  
-
-                        <Grid item xs={12} sm={6} md={6} lg={6}>
-                          {textFieldFormik({
-                            id: "confirmPassword",
-                            label: "Confirmar senha",
-                            type: "password",
-                          })}
-                         </Grid>
-
-                         <Grid
+                        <Grid
                             container
                             spacing={2}
                             style={{ marginTop: 10 }}
@@ -210,7 +186,7 @@ export default function EditDoctor() {
                                 <Button
                                     variant="outlined"
                                     style={classes.btnCancel}
-                                    onClick={() => history.push("/choice-patient-monitoring")}
+                                    onClick={() => history.push("/choice-doctor-edit")}
                                 >
                                     Voltar
                                 </Button>
@@ -219,17 +195,16 @@ export default function EditDoctor() {
                             <Grid item>
                                 <Button
                                     variant="outlined"
-                                    style={classes.btnSubmit}
                                     type="submit"
+                                    style={classes.btnSubmit}
                                 >
-                                    Salvar
+                                    Editar
                                 </Button>
                             </Grid>
                         </Grid>
                     </Grid>
                 </form>
             </CardContent>
-
             <Notification notify={notify} setNotify={setNotify} />
         </Card>
     );

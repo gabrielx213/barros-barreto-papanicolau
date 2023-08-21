@@ -1,5 +1,5 @@
 import { useHistory } from "react-router-dom";
-import ChoicePatient from "../../components/ChoiceHospital";
+import ChoiceHospital from "../../components/ChoiceHospital";
 
 export default function ChoiceHospitalEdit() {
   const history = useHistory();
@@ -9,7 +9,7 @@ export default function ChoiceHospitalEdit() {
   };
 
   return (
-    <ChoiceHospitak
+    <ChoiceHospital
       title="Selecione o Hospital que deseja editar"
       onChoosing={onChoosing}
     />

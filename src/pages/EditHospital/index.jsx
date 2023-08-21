@@ -3,7 +3,6 @@ import { useFormik } from "formik";
 import { useState } from "react";
 import { useEffect } from "react";
 import api from "../../services/api";
-import moment from "moment";
 import { components } from "./components";
 import { validationSchema } from "./validationSchema";
 import Notification from "../../components/Notification/Notification";
@@ -11,7 +10,7 @@ import { useHistory, useParams } from "react-router-dom";
 
 const classes = {
   btnSubmit: {
-    backgroundColor: "#1B98E0",
+    backgroundColor: "#075d85",
     color: "white",
     border: "1px solid rgba(0, 0, 0, 0.23)",
   },
@@ -33,7 +32,6 @@ const INITIAL_VALUES_FORMIK = {
   name: "",
   ctiPhone: "",
   onDutyPhone: "",
-  CNES:"",
 };
 
 export default function EditHospital() {
@@ -74,7 +72,6 @@ export default function EditHospital() {
     const {
       ctiPhone,
       onDutyPhone,
-      CNES,
       ...data
     } = values;
 
@@ -83,36 +80,36 @@ export default function EditHospital() {
     data.onDutyPhone = onDutyPhone;
 
     const newData = removeOptionalValues(
-      [
-        "ctiPhone",
-        "onDutyPhone",
-      ],
-      data
+        [
+          "ctiPhone",
+          "onDutyPhone",
+        ],
+        data
     );
 
     api
-      .patch(`/hospitals/${hospitalId}`, newData)
-      .then((response) => {
-        setNotify({
-          isOpen: true,
-          message: "",
-          type: "success",
-          title: "Informações atualizadas com sucesso!",
-        });
-
-        // setTimeout(() => history.push("/choice-patient-monitoring"), 700);
-      })
-      .catch((err) => {
-        const message = err.response?.data?.error?.message;
-        if (message) {
+        .patch(`/hospitals/${hospitalId}`, newData)
+        .then((response) => {
           setNotify({
             isOpen: true,
-            message: message,
-            type: "error",
-            title: "Falha ao realizar edições!",
+            message: "",
+            type: "success",
+            title: "Informações atualizadas com sucesso!",
           });
-        }
-      });
+
+          // setTimeout(() => history.push("/choice-patient-monitoring"), 700);
+        })
+        .catch((err) => {
+          const message = err.response?.data?.error?.message;
+          if (message) {
+            setNotify({
+              isOpen: true,
+              message: message,
+              type: "error",
+              title: "Falha ao realizar edições!",
+            });
+          }
+        });
   };
   const formik = useFormik({
     initialValues: valuesFormik,
@@ -127,65 +124,74 @@ export default function EditHospital() {
   } = components(formik);
 
   return (
-    <Card style={{ margin: 20 }}>
-      <CardContent>
-        <Typography
-          variant="h5"
-          align="center"
-          style={{ fontWeight: "bold", marginBottom: 30 }}
-        >
-          Editar informações do hospital
-        </Typography>
+      <Card style={{ margin: 20 }}>
+        <CardContent>
+          <Typography
+              variant="h5"
+              align="center"
+              style={{ fontWeight: "bold", marginBottom: 30 }}
+          >
+            Editar informações do hospital
+          </Typography>
 
-        <form onSubmit={formik.handleSubmit}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6} md={6} lg={6}>
-              {textFieldFormik({
-                id: "name",
-                label: "Nome do Hospital",
-                required: true,
-              })}
-            </Grid>
-            
-            <Grid item xs={12} sm={6} md={3} lg={3}>
-              {inputMaskFormik({
-                id: "CNES",
-                label: "CNES",
-                mask: "9999999",
-                useRawValue: true,
-              })}
-            </Grid>
+          <form onSubmit={formik.handleSubmit}>
+            <Grid container spacing={2}>
+              <Grid item xs={4} sm={4} md={4} lg={4}>
+                {textFieldFormik({
+                  id: "name",
+                  label: "Nome do Hospital",
+                  required: true,
+                })}
+              </Grid>
 
-            <Grid item xs={12} sm={6} md={6} lg={6}>
-            {inputMaskFormik({
-                id: "ctiPhone",
-                label: "Telefone do CTI",
-                mask: "(99) 99999-9999",
-                useRawValue: true,
-              })}
-            </Grid>
+              <Grid item xs={4} sm={4} md={4} lg={4}>
+                {inputMaskFormik({
+                  id: "ctiPhone",
+                  label: "Telefone do CTI",
+                  mask: "(99) 99999-9999",
+                  useRawValue: true,
+                })}
+              </Grid>
 
-            <Grid item xs={12} sm={6} md={6} lg={6}>
-            {inputMaskFormik({
-                id: "onDutyPhone",
-                label: "Telefone do Plantão",
-                mask: "(99) 99999-9999",
-                useRawValue: true,
-              })}
-            </Grid>
-              <Grid item>
-                <Button
-                  variant="outlined"
-                  style={classes.btnSubmit}
-                  type="submit"
-                >
-                  Salvar
-                </Button>
+              <Grid item xs={4} sm={4} md={4} lg={4}>
+                {inputMaskFormik({
+                  id: "onDutyPhone",
+                  label: "Telefone do Plantão",
+                  mask: "(99) 99999-9999",
+                  useRawValue: true,
+                })}
+              </Grid>
+
+              <Grid
+                  container
+                  spacing={2}
+                  style={{ marginTop: 10 }}
+                  justifyContent="center"
+              >
+                <Grid item>
+                  <Button
+                      variant="outlined"
+                      style={classes.btnCancel}
+                      onClick={() => history.push("/choice-hospital-edit")}
+                  >
+                    Voltar
+                  </Button>
+                </Grid>
+
+                <Grid item>
+                  <Button
+                      variant="outlined"
+                      type="submit"
+                      style={classes.btnSubmit}
+                  >
+                    Editar
+                  </Button>
+                </Grid>
               </Grid>
             </Grid>
-        </form>
-      </CardContent>
-      <Notification notify={notify} setNotify={setNotify} />
-    </Card>
+          </form>
+        </CardContent>
+        <Notification notify={notify} setNotify={setNotify} />
+      </Card>
   );
 }

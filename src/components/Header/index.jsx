@@ -15,15 +15,23 @@ function Header({ handleOpenNotificationCustom, handleCloseNotificationCustom })
 		case 'Controlador':
 			userPermission = 'manager';
 			break;
-		case 'Executor':
-			userPermission = 'executor';
+		case 'Doctor':
+			userPermission = 'doctor';
 			break;
 		default:
 			break;
 	}
 
 	const userName = localStorage.getItem('NameUser');
-	const typeUser = localStorage.getItem('Permission');
+	let typeUser = localStorage.getItem('Permission');
+
+	if (typeUser.toString() === 'Doutor') {
+		typeUser = 'Médico';
+	}
+
+	if (typeUser.toString() === 'Controlador') {
+		typeUser = 'Técnico';
+	}
 	const [infoUser, setInfoUser] = useState([]);
 
 	useEffect(() => {
@@ -47,20 +55,20 @@ function Header({ handleOpenNotificationCustom, handleCloseNotificationCustom })
 	return (
 		<header className='header-pages'>
 			<div>
-				<span className="name-user">Bem-vindo(a), <b>{userName}</b></span>
-				<span className="type-user">Perfil: <strong>{typeUser}</strong></span>
+				<span className="name-user">Bem-vindo(a), <b>{userName.toString()}</b></span>
+				<span className="type-user">Perfil: <strong>{typeUser.toString()}</strong></span>
 				<br></br>
 				{/* Irá exibir essa parte do código somente se o usuário for controlador ou executor */}
-				{userPermission === 'manager' || userPermission === 'executor' ?
-					<span className="type-user">
-						Categorias: {infoUser.map((res, i) => (
-							<strong key={res}>
-								{res}
-								{infoUser[i + 1] ? ', ' : ''}
-							</strong>
-						))}
-					</span>
-					: false}
+				{/*{userPermission === 'manager' || userPermission === 'executor' ?*/}
+				{/*	<span className="type-user">*/}
+				{/*		Categorias: {infoUser.map((res, i) => (*/}
+				{/*			<strong key={res}>*/}
+				{/*				{res}*/}
+				{/*				{infoUser[i + 1] ? ', ' : ''}*/}
+				{/*			</strong>*/}
+				{/*		))}*/}
+				{/*	</span>*/}
+				{/*	: false}*/}
 			</div>
 
 			{/*<Link className="button">

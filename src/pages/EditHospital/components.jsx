@@ -1,16 +1,7 @@
 import {
   TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Autocomplete,
-  FormControlLabel,
-  Checkbox,
 } from "@mui/material";
-import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import MaskInput from "../../components/MaskInput";
+import MaskInput from "../../../src/components/MaskInput";
 import moment from "moment";
 
 const classes = {

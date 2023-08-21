@@ -21,12 +21,12 @@ const classes = {
   },
 
   btnSubmit: {
-    backgroundColor: "#1B98E0",
+    backgroundColor: "#075d85",
     color: "white",
     border: "1px solid rgba(0, 0, 0, 0.23)",
   },
   btnCancel: {
-    backgroundColor: "#CFCFCF",
+    backgroundColor: "#C0C0C0",
     color: "black",
     border: "1px solid rgba(0, 0, 0, 0.23)",
   },
@@ -41,11 +41,11 @@ const INITIAL_VALUE_NOTIFY = {
 
 const INITIAL_VALUE_FORMIK = {
   name: "",
-  CNES: "",
+  // CNES: "",
   ctiPhone: "",
   onDutyPhone: "",
-  cityname: "",
-  statename: "",
+  // city: "",
+  // state: "",
 };
 
 export default function RegisterHospital() {
@@ -53,7 +53,8 @@ export default function RegisterHospital() {
   const [notify, setNotify] = useState(INITIAL_VALUE_NOTIFY);
 
   const post = (values) => {
-    const { confirmPassword, ...data } = values;
+    const {...data } = values;
+
     api
       .post("hospitals", data)
       .then(onSubmitSuccessfully)
@@ -139,37 +140,21 @@ export default function RegisterHospital() {
 
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6} md={3} lg={3}>
+            <Grid item xs={4} sm={4} md={4} lg={4}>
               {textFieldFormik({ id: "name", label: "Nome" })}
             </Grid>
-            <Grid item xs={12} sm={6} md={3} lg={3}>
-               {textFieldFormik({ id: "cityname", label: "Município" })}
-            </Grid>
-            <Grid item xs={12} sm={6} md={3} lg={3}>
-              {textFieldFormik({ id: "statename", label: "Estado" })}
-            </Grid>
-
-            <Grid item xs={12} sm={6} md={3} lg={3}>
+            <Grid item xs={4} sm={4} md={4} lg={4}>
               {inputMaskFormik({
-                id: "CNES",
-                label: "CNES",
-                mask: "9999999",
-                useRawValue: true,
-              })}
-            </Grid>
-
-            <Grid item xs={12} sm={6} md={3} lg={3}>
-              {inputMaskFormik({
-                id: "ctiphone",
+                id: "ctiPhone",
                 label: "Telefone do CTI",
                 mask: "(99) 99999-9999",
                 useRawValue: true,
               })}
             </Grid>
 
-            <Grid item xs={12} sm={6} md={6} lg={6}>
+            <Grid item xs={4} sm={4} md={4} lg={4}>
               {inputMaskFormik({
-                id: "onDutyphone",
+                id: "onDutyPhone",
                 label: "Telefone do Plantão",
                 mask: "(99) 99999-9999",
                 useRawValue: true,
@@ -182,15 +167,6 @@ export default function RegisterHospital() {
               style={{ marginTop: 10 }}
               justifyContent="center"
             >
-              <Grid item>
-                <Button
-                  variant="outlined"
-                  style={classes.btnCancel}
-                  onClick={() => history.push("/choice-patient-monitoring")}
-                >
-                  Voltar
-                </Button>
-              </Grid>
 
               <Grid item>
                 <Button

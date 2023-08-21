@@ -21,7 +21,7 @@ const classes = {
     }
 };
 
-export default function ChoiceDoctor({ onChoosing, useFilter = true, title, onlyDischargedDoctor, onlyActiveDoctors }) {
+export default function ChoiceDoctor({ onChoosing, useFilter = true, title }) {
 
     const [searchValue, setSearchValue] = useState('');
     const [doctors, setDoctors] = useState([]);
@@ -29,19 +29,13 @@ export default function ChoiceDoctor({ onChoosing, useFilter = true, title, only
     useEffect(() => {
         let filter = {
             order: 'name',
-            where: {}
+            where: {role: "Doutor"},
         };
-
-        if (onlyDischargedDoctor) {
-            filter.where = {
-                dischargedFromHospital: { neq: null }
-            };
-        }
 
         api.get(`/doctors?filter=${JSON.stringify(filter)}`).then((response) => {
             setDoctors(response.data);
         })
-    }, [onlyDischargedDoctor]);
+    }, []);
 
     const getOnlyNumbers = (value) => {
         return value.replace(/[^\d,]/g, '');
@@ -50,18 +44,11 @@ export default function ChoiceDoctor({ onChoosing, useFilter = true, title, only
     function loadDoctors() {
         let filter = {
             order: 'name',
-            where: {}
+            where: {role: "Doutor"}
         };
 
         const searchValueOnlyNumbers = getOnlyNumbers(searchValue);
 
-        if (onlyDischargedDoctor) {
-            filter.where = {
-                dischargedFromHospital: { neq: null }
-            };
-        }
-
-        //Se for um cpf ou cns
         if (searchValueOnlyNumbers) {
             filter.where = {
                 ...filter.where,
@@ -114,7 +101,7 @@ export default function ChoiceDoctor({ onChoosing, useFilter = true, title, only
                     variant='outlined'
                     fullWidth
                     size='small'
-                    style={{ backgroundColor: '#1B98E0', color: 'white', height: 40 }}
+                    style={{ backgroundColor: '#075d85', color: 'white', height: 40 }}
                     onClick={() => loadDoctors()}
                 >
                     <Search />
